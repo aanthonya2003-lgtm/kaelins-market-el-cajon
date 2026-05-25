@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/cron/
+Disallow: /api/
+
+Sitemap: https://kaelins-market-el-cajon.vercel.app/sitemap.xml
