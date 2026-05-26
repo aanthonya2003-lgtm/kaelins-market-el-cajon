@@ -5,14 +5,22 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { motion, SCROLL_TOGGLE } from '@/lib/motion';
 import { BUSINESS } from '@/lib/business-data';
-import { EMAIL_VERIFIED, SMS_KEYWORD } from '@/lib/feature-flags';
+import { EMAIL_VERIFIED } from '@/lib/feature-flags';
+// import { SMS_KEYWORD } from '@/lib/feature-flags';
+// ↑ Re-import when re-enabling the commented-out SMS CTA block in JSX below.
 
 /**
- * EngagementCTA — merged from Steal #3 (Northgate newsletter) + Steal #9 (Superior SMS).
- * Per Edit 4: ONE section, both paths, no redundancy.
- * Primary state = SMS (works day 1 because phone is verified).
- * When EMAIL_VERIFIED flips true, the email form slides in ABOVE the SMS CTA as an
- * additional option, not a replacement.
+ * EngagementCTA
+ *
+ * CURRENT STATE: phone CTA only.
+ *
+ * The original SMS "Text DEALS" implementation is preserved as a JSX comment
+ * block below. Re-enable per README "Unblock Checklist" item:
+ *   "Re-enable Text DEALS SMS CTA once owner has been briefed and SMS
+ *    response workflow is confirmed."
+ *
+ * When EMAIL_VERIFIED flips true, the email form slides in above the phone
+ * CTA as an additional option, not a replacement.
  */
 export function EngagementCTA() {
   const root = useRef<HTMLElement>(null);
@@ -48,7 +56,7 @@ export function EngagementCTA() {
       });
       setSubmitted(true);
     } catch {
-      // soft fail — user can still SMS
+      // soft fail — user can still call
     }
   };
 
@@ -73,7 +81,7 @@ export function EngagementCTA() {
           Weekly deals. Recipes. <em className="italic">24 horas antes.</em>
         </h2>
 
-        {/* Email form — only when verified (Edit 4: slides in above SMS) */}
+        {/* Email form — only when verified (Edit 4: slides in above phone CTA) */}
         {EMAIL_VERIFIED && !submitted && (
           <form
             data-cta-item
@@ -103,14 +111,36 @@ export function EngagementCTA() {
           </p>
         )}
 
-        {/* Divider between email + SMS (only when both visible) */}
+        {/* Divider between email + phone (only when both visible) */}
         {EMAIL_VERIFIED && (
           <p data-cta-item className="font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--color-cream)]/50 my-8">
             or, no email needed —
           </p>
         )}
 
-        {/* SMS (always live — day 1) */}
+        {/* Live phone CTA — replaces SMS pending owner workflow brief */}
+        <a
+          data-cta-item
+          href={`tel:${BUSINESS.phoneE164}`}
+          className="mt-8 inline-flex items-center gap-3 bg-[var(--color-ink)] text-[var(--color-cream)] px-8 py-5 font-mono tracking-[0.14em] text-sm uppercase hover:bg-[var(--color-saffron)] hover:text-[var(--color-ink)] transition-colors duration-300"
+        >
+          Call {BUSINESS.phone} for this week&rsquo;s specials
+        </a>
+
+        {/* ───────────────────────────────────────────────────────────────
+            SMS CTA — TEMPORARILY DISABLED
+
+            Re-enable per README "Unblock Checklist" item:
+              "Re-enable Text DEALS SMS CTA once owner has been briefed and
+               SMS response workflow is confirmed."
+
+            To restore:
+              1. Uncomment the `SMS_KEYWORD` import at the top of this file.
+              2. Decide whether to keep the phone CTA above as a secondary
+                 option or replace it entirely with the SMS CTA below.
+              3. Uncomment the JSX block below (move it out of this comment).
+            ─────────────────────────────────────────────────────────────── */}
+        {/*
         {!EMAIL_VERIFIED && (
           <p data-cta-item className="mt-8 text-[var(--color-cream)]/80 max-w-[44ch] mx-auto text-[clamp(16px,1.3vw,20px)]">
             No app. No download. Just text.
@@ -121,11 +151,12 @@ export function EngagementCTA() {
           href={`sms:${BUSINESS.phoneE164}?&body=${SMS_KEYWORD}`}
           className="mt-8 inline-flex items-center gap-3 bg-[var(--color-ink)] text-[var(--color-cream)] px-8 py-5 font-mono tracking-[0.14em] text-sm uppercase hover:bg-[var(--color-saffron)] hover:text-[var(--color-ink)] transition-colors duration-300"
         >
-          Text &ldquo;{SMS_KEYWORD}&rdquo; to {BUSINESS.phone} →
+          Text “{SMS_KEYWORD}” to {BUSINESS.phone} →
         </a>
         <p data-cta-item className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-cream)]/60 mt-4">
           Standard message rates apply
         </p>
+        */}
       </div>
     </section>
   );

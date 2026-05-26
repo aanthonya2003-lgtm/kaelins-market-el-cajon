@@ -54,7 +54,7 @@ All routes ship with: dedicated JSON-LD, mobile-first layout, bidirectional GSAP
 7. LoyaltyAppCardCTA - AppCard signup
 8. InstagramFeed - LIVE-OR-INVISIBLE (only renders when handle confirmed + token live)
 9. TestimonialsMarquee - dual-row, real reviews
-10. EngagementCTA - merged SMS + email form
+10. EngagementCTA - phone CTA (SMS commented out pending owner workflow brief) + email form when verified
 
 ## Weekly Ad Data Pipeline
 
@@ -67,15 +67,18 @@ Fallback: WordPress RSS feed (kept for resilience; lib/parse-rss.ts retains the 
 
 When WP REST returns featured images, the archive grid cards open a full-screen lightbox showing the raw JPG. Tap outside the image or press Escape to close. Secondary "View on kaelinsmarket.com" link is available in the lightbox but is NOT the primary tap target.
 
-## Text DEALS SMS CTA - Desktop Behavior (Intentional)
+## Text DEALS SMS CTA - CURRENTLY DISABLED
 
-The "Text DEALS to (619) 440-1423" CTA in EngagementCTA uses an `sms:` href.
+The SMS CTA has been temporarily replaced with a phone CTA (`tel:` href) in `components/sections/EngagementCTA.tsx`. The original SMS implementation is preserved as a JSX comment block in that file.
 
-- **iOS:** Opens Messages with the recipient and body pre-filled. Works as designed.
-- **Android:** Opens default SMS app with recipient and body pre-filled. Works as designed.
-- **Desktop Chrome/Firefox/Safari:** No SMS handler is registered. Clicking the button silently does nothing.
+**Reason for disabling:** SMS responses require an inbound message handler (auto-responder, list management, opt-out flow). Until the owner has been briefed and a workflow is in place, sending shoppers to a one-way SMS would create a dead end.
 
-This is **intentional**. The CTA is mobile-first by design — SMS conversions only happen on phones, and 90%+ of grocery site mobile traffic is mobile. Desktop users see the same button as a brand cue but are not the target audience for the conversion. No fallback is needed.
+See "Unblock Checklist" below for the re-enable trigger.
+
+Reference desktop-behavior notes (still apply when re-enabled):
+- **iOS:** Opens Messages with the recipient and body pre-filled.
+- **Android:** Opens default SMS app with recipient and body pre-filled.
+- **Desktop Chrome/Firefox/Safari:** No SMS handler registered. Mobile-first by design.
 
 ## Cron Schedule (Hobby-plan compliant)
 
@@ -124,6 +127,7 @@ FB_PAGE_ID              (only after FB page verified)
 - [ ] **Alpine Twisters Inc incorporation year** - placeholder in /about timeline. Pull from California Secretary of State business search OR owner-confirm before adding date.
 - [ ] **Owner quote for /about** - placeholder shipped. Awaits Hani Garmo confirmation.
 - [ ] **Tier 1 photography session** - retainer pitch in docs/RETAINER_PHOTOGRAPHY.md. Unlocks 21+ department photos + storefront + owner portrait in one shoot.
+- [ ] **Re-enable Text DEALS SMS CTA** once owner has been briefed and SMS response workflow is confirmed. Implementation is commented in `components/sections/EngagementCTA.tsx`.
 
 ## Build by
 
