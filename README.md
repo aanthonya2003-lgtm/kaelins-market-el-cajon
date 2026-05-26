@@ -23,9 +23,10 @@ Built by Weblove Elite. Next.js 15.3.2 + React 19 + Tailwind 4.1.5 + GSAP + Leni
 ## Iron Laws Enforced
 
 1. No verified email = no form page. All form pages are phone CTAs until owner email is verified.
-2. Every site ships with crons. vercel.json includes 3 cron jobs.
+2. Every site ships with crons. vercel.json includes the cron jobs allowed by the current plan tier.
 3. Bidirectional animations. once: true is BANNED.
 4. 100dvh on hero, never 100vh.
+5. Cron schedules respect Vercel plan limits. See docs/DEFINITION_OF_DONE.md for tier matrix.
 
 ## Sections (in render order - per ROI funnel)
 
@@ -40,12 +41,17 @@ Built by Weblove Elite. Next.js 15.3.2 + React 19 + Tailwind 4.1.5 + GSAP + Leni
 9. TestimonialsMarquee - dual-row, real reviews
 10. EngagementCTA - merged SMS + email form
 
-## Cron Schedule
+## Cron Schedule (Hobby-plan compliant)
 
 ```
-/api/cron/refresh-weekly-ad      Tue 06:00 UTC   (weekly ad)
-/api/cron/refresh-social-feed    Every hour      (social)
+/api/cron/refresh-weekly-ad      Tue 06:00 UTC   (weekly ad refresh)
 /api/cron/health-check           Daily 08:00 UTC (link integrity)
+```
+
+**Dormant** (route file exists but not scheduled — requires Vercel Pro upgrade):
+
+```
+/api/cron/refresh-social-feed    Hourly          (re-enable on Pro)
 ```
 
 Plus GitHub Action refresh-instagram-token.yml runs every 55 days (see docs/CI_WORKFLOWS.md).
@@ -76,6 +82,7 @@ FB_PAGE_ID              (only after FB page verified)
 - [ ] Owner email - unblocks contact form, catering, jobs, newsletter
 - [ ] Instagram handle confirmation + token - unlocks live feed
 - [ ] Facebook page vanity URL - replaces numeric URL, satisfies QC #20
+- [ ] **Vercel Pro upgrade** - REQUIRED before re-enabling hourly `refresh-social-feed` cron. Trigger: at least one social handle (IG or FB) verified AND owner approves the plan-tier cost.
 - [ ] Domain decision - deploy stays at *.vercel.app until owner approves cutover
 - [ ] GitHub Actions workflows - paste from docs/CI_WORKFLOWS.md via web UI (token scope limitation)
 
