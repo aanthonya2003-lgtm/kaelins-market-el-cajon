@@ -71,7 +71,7 @@ export function AppCardSteps() {
       <div className="container-max">
         <div className="mb-16 lg:mb-20">
           <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--color-chile)] mb-3">
-            C\u00f3mo funciona / How it works
+            Cómo funciona / How it works
           </p>
           <h2 className="font-display text-[clamp(36px,5vw,72px)] leading-[0.95] tracking-[-0.025em] text-[var(--color-ink)] max-w-[20ch]">
             Three steps. <em className="italic text-[var(--color-saffron)]">No fine print.</em>
