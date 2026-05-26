@@ -34,11 +34,13 @@ Built by Weblove Elite. Next.js 15.5.18 + React 19.0.6 + Tailwind 4.1.5 + GSAP +
 
 ```
 /                  Home (10-section composition)
-/weekly-ad         Live RSS feed + Fisher Printing iframe + countdown
-/departments       TBD (sprint in progress)
-/loyalty           TBD (sprint in progress)
-/about             TBD (sprint in progress)
+/weekly-ad         Live RSS feed + Fisher Printing iframe + countdown + SpecialAnnouncement JSON-LD
+/departments       7 bilingual department details + sticky anchor index + CollectionPage JSON-LD
+/about             Heritage hero + sourced timeline + owner-quote placeholder + community voices
+/loyalty           AppCard hero + 3-step explainer + WebPage+Offer JSON-LD
 ```
+
+All routes ship with: dedicated JSON-LD, mobile-first layout, bidirectional GSAP animations, ghost watermarks where applicable.
 
 ## Home page sections (in render order - per ROI funnel)
 
@@ -99,6 +101,7 @@ FB_PAGE_ID              (only after FB page verified)
 - [ ] GitHub Actions workflows - paste from docs/CI_WORKFLOWS.md via web UI (token scope limitation)
 - [ ] **Alpine Twisters Inc incorporation year** - placeholder in /about timeline. Pull from California Secretary of State business search OR owner-confirm before adding date.
 - [ ] **Owner quote for /about** - placeholder shipped. Awaits Hani Garmo confirmation.
+- [ ] **Tier 1 photography session** - retainer pitch in docs/RETAINER_PHOTOGRAPHY.md. Unlocks 21+ department photos + storefront + owner portrait in one shoot.
 
 ## Build by
 
