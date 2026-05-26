@@ -24,6 +24,30 @@
 - [ ] Surface the unbuilt route in `README.md` "Unblock Checklist" so it's visible
 - [ ] Optional: nav link can stay (signals intent) but only if next sprint is committed to building it
 
+## Cron Shipping Rules
+
+### Plan-tier matrix — Vercel cron limits (current Hobby tier)
+
+| Plan | Max crons | Max frequency per cron | Notes |
+|---|---|---|---|
+| **Hobby** (current) | **2 active** | **once per day** | Anything more frequent silently fails or blocks deploy |
+| **Pro** | 40 | every minute | Required to re-enable `refresh-social-feed` (hourly) |
+| **Enterprise** | 100 | every minute | Reserved |
+
+### When adding a new cron
+
+- [ ] **Frequency MUST be compatible with the current plan tier.** Hobby = daily or less. Pro = anything.
+- [ ] If the new cron exceeds tier limits, do NOT add it to `vercel.json` — keep the route file as dormant code and add the cron entry to the README "Dormant crons" section with the upgrade trigger
+- [ ] Authorization: every cron route MUST gate on `Bearer ${process.env.CRON_SECRET}` in production
+- [ ] Add to README `Cron Schedule` section in the same commit
+- [ ] Surface the upgrade trigger in README "Unblock Checklist" if it requires plan change
+
+### When a cron's frequency requirement changes
+
+- [ ] Check current plan tier first — `vercel teams ls` or dashboard
+- [ ] If frequency now exceeds tier: move the cron from active to dormant, document the upgrade trigger
+- [ ] If frequency now fits tier: move from dormant to active, update README in same commit
+
 ## Sitemap Priority Convention
 
 | Priority | Use for |
@@ -44,6 +68,7 @@
 | `monthly` | Static department + about + loyalty pages |
 | `yearly` | Legal pages, T&Cs |
 
-## Reference: this rule was added because
+## Reference: rules added because
 
-Initial scaffold session listed `/weekly-ad`, `/departments`, `/loyalty`, `/about` in sitemap before they existed. Caught pre-deploy by Anthony. Sitemap had to be patched in commit `4538c08`. **Never again.**
+- **Sitemap rule** — Initial scaffold listed `/weekly-ad`, `/departments`, `/loyalty`, `/about` in sitemap before they existed. Caught pre-deploy by Anthony. Patched in commit `4538c08`. Never again.
+- **Cron tier rule** — Initial `vercel.json` shipped 3 crons including an hourly `refresh-social-feed` that would have failed silently on Hobby tier. Caught pre-deploy by Anthony. Patched in the same session.
