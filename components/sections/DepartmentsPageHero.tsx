@@ -49,7 +49,10 @@ export function DepartmentsPageHero() {
 
       <div className="container-max relative z-10">
         <p data-dept-hero-sub className="font-mono text-[11px] tracking-[0.28em] uppercase text-[var(--color-chile)] mb-6">
-          Departamentos / <span dir="rtl" className="font-arabic text-[var(--color-maqam)]">\u0627\u0644\u0623\u0642\u0633\u0627\u0645</span>
+          Departamentos /{' '}
+          <span dir="rtl" className="font-arabic text-[var(--color-maqam)]">
+            {'\u0627\u0644\u0623\u0642\u0633\u0627\u0645'}
+          </span>
         </p>
 
         <h1
