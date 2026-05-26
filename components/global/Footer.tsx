@@ -1,7 +1,19 @@
 import Link from 'next/link';
 import { BUSINESS } from '@/lib/business-data';
-import { FACEBOOK_VERIFIED, INSTAGRAM_VERIFIED, FACEBOOK_NUMERIC_URL } from '@/lib/feature-flags';
+import {
+  FACEBOOK_VERIFIED,
+  INSTAGRAM_VERIFIED,
+  FACEBOOK_NUMERIC_URL,
+} from '@/lib/feature-flags';
 
+/**
+ * Footer
+ *
+ * Connect section follows the LIVE-OR-INVISIBLE rule (post-sprint Fix 1):
+ * if FACEBOOK_VERIFIED / INSTAGRAM_VERIFIED is false, the corresponding
+ * <li> is NOT rendered at all. No "— verifying" placeholder.
+ * Only confirmed social profiles appear.
+ */
 export function Footer() {
   return (
     <footer className="bg-[var(--color-ink)] text-[var(--color-cream)]">
@@ -67,41 +79,53 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Connect */}
+          {/* Connect — live links only, no verifying placeholders */}
           <div className="lg:col-span-2">
             <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--color-cream)]/50 mb-4">
               Connect
             </p>
             <ul className="space-y-2.5 text-[15px]">
-              {FACEBOOK_VERIFIED ? (
+              {FACEBOOK_VERIFIED && (
                 <li>
-                  <a href={FACEBOOK_NUMERIC_URL} target="_blank" rel="noreferrer" className="hover:text-[var(--color-saffron)] transition-colors">
+                  <a
+                    href={FACEBOOK_NUMERIC_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-[var(--color-saffron)] transition-colors"
+                  >
                     Facebook
                   </a>
                 </li>
-              ) : (
-                <li className="text-[var(--color-cream)]/40 font-mono text-[11px] tracking-[0.14em] uppercase">
-                  Facebook — verifying
-                </li>
               )}
-              {INSTAGRAM_VERIFIED ? (
+              {INSTAGRAM_VERIFIED && (
                 <li>
-                  <a href="https://instagram.com/kaelinsmarket" target="_blank" rel="noreferrer" className="hover:text-[var(--color-saffron)] transition-colors">
+                  <a
+                    href="https://instagram.com/kaelinsmarket"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-[var(--color-saffron)] transition-colors"
+                  >
                     Instagram
                   </a>
                 </li>
-              ) : (
-                <li className="text-[var(--color-cream)]/40 font-mono text-[11px] tracking-[0.14em] uppercase">
-                  Instagram — verifying
-                </li>
               )}
               <li>
-                <a href={BUSINESS.urls.yelp} target="_blank" rel="noreferrer" className="hover:text-[var(--color-saffron)] transition-colors">
+                <a
+                  href={BUSINESS.urls.yelp}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[var(--color-saffron)] transition-colors"
+                >
                   Yelp
                 </a>
               </li>
               <li>
-                <a href={BUSINESS.urls.appcard} target="_blank" rel="noreferrer" className="hover:text-[var(--color-saffron)] transition-colors">
+                <a
+                  href={BUSINESS.urls.appcard}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[var(--color-saffron)] transition-colors"
+                >
                   AppCard
                 </a>
               </li>

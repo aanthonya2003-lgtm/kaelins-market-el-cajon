@@ -10,14 +10,34 @@ import type { InstagramPost } from '@/types';
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
+/**
+ * InstagramFeed — LIVE-OR-INVISIBLE.
+ *
+ * Rule (per Anthony, post-sprint Fix 1): the feature flag must mean
+ * INVISIBLE, not visible-but-grayed. This component returns null in every
+ * case where the live feed cannot render real posts:
+ *   - INSTAGRAM_VERIFIED feature flag is false (build-time intent)
+ *   - data.blocked is true (runtime — token missing or API errored)
+ *   - data has loaded but contains zero posts
+ *
+ * The hook order is preserved because INSTAGRAM_VERIFIED is a module-level
+ * constant: if it's false, this component always returns null before any
+ * hooks fire — which is consistent across all renders.
+ */
 export function InstagramFeed() {
+  // Build-time short-circuit — component is invisible until handle is verified
+  if (!INSTAGRAM_VERIFIED) return null;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const root = useRef<HTMLElement>(null);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data } = useSWR<{ posts: InstagramPost[]; blocked: boolean }>(
     '/api/instagram-feed',
     fetcher,
-    { refreshInterval: 3_600_000 } // 1h
+    { refreshInterval: 3_600_000 }
   );
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useGSAP(
     () => {
       gsap.from('[data-ig]', {
@@ -36,8 +56,11 @@ export function InstagramFeed() {
     { scope: root, dependencies: [data] }
   );
 
+  // Runtime checks: hide entirely if blocked or empty
+  if (data?.blocked) return null;
+  if (data !== undefined && data.posts.length === 0) return null;
+
   const posts = data?.posts ?? [];
-  const empty = !INSTAGRAM_VERIFIED || data?.blocked || posts.length === 0;
 
   return (
     <section
@@ -55,44 +78,34 @@ export function InstagramFeed() {
             <em className="italic text-[var(--color-saffron)]">Hoy</em> en el mercado
           </h2>
           <a
-            href={INSTAGRAM_VERIFIED ? 'https://instagram.com/kaelinsmarket' : '#'}
-            target={INSTAGRAM_VERIFIED ? '_blank' : undefined}
+            href="https://instagram.com/kaelinsmarket"
+            target="_blank"
             rel="noreferrer"
             className="font-mono text-[var(--color-saffron)] text-[12px] tracking-[0.2em] uppercase hover:underline underline-offset-4 self-start md:self-end"
           >
-            {INSTAGRAM_VERIFIED ? '@kaelinsmarket ↗' : '@kaelinsmarket — verifying'}
+            @kaelinsmarket ↗
           </a>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1">
-          {(empty ? Array(6).fill(null) : posts.slice(0, 6)).map((p: InstagramPost | null, i: number) => (
+          {posts.slice(0, 6).map((p) => (
             <a
-              key={p?.id ?? `placeholder-${i}`}
+              key={p.id}
               data-ig
-              href={p?.permalink ?? '#'}
+              href={p.permalink}
               target="_blank"
               rel="noreferrer"
               className="relative aspect-square block overflow-hidden bg-[var(--color-cream)]/[0.06]"
             >
-              {p ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={p.thumbnail_url ?? p.media_url}
-                  alt={p.caption?.slice(0, 80) ?? `Kaelin's Market Instagram post ${i + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[var(--color-ink)] via-[var(--color-cream)]/5 to-[var(--color-ink)] animate-pulse" />
-              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={p.thumbnail_url ?? p.media_url}
+                alt={p.caption?.slice(0, 80) ?? 'Instagram post'}
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              />
             </a>
           ))}
         </div>
-
-        {empty && (
-          <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-[var(--color-cream)]/40 mt-6">
-            ⚠︎ Live feed unlocks once Instagram handle is confirmed and access token is added.
-          </p>
-        )}
       </div>
     </section>
   );

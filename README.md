@@ -29,12 +29,13 @@ Built by Weblove Elite. Next.js 15.5.18 + React 19.0.6 + Tailwind 4.1.5 + GSAP +
 5. Cron schedules respect Vercel plan limits. See docs/DEFINITION_OF_DONE.md for tier matrix.
 6. Patch-hygiene check at every session kickoff. See docs/DEFINITION_OF_DONE.md.
 7. Legal claims require 2+ sources, one authoritative. See docs/DEFINITION_OF_DONE.md.
+8. Feature flags mean INVISIBLE, not visible-but-grayed. Unverified social handles, IG feeds, etc., are removed from render entirely. No "verifying" placeholders ship to users.
 
 ## Routes
 
 ```
 /                  Home (10-section composition)
-/weekly-ad         Live RSS feed + Fisher Printing iframe + countdown + SpecialAnnouncement JSON-LD
+/weekly-ad         Live WP REST API feed + lightbox JPG viewer + Fisher Printing iframe (graceful fallback)
 /departments       7 bilingual department details + sticky anchor index + CollectionPage JSON-LD
 /about             Heritage hero + sourced timeline + owner-quote placeholder + community voices
 /loyalty           AppCard hero + 3-step explainer + WebPage+Offer JSON-LD
@@ -51,9 +52,30 @@ All routes ship with: dedicated JSON-LD, mobile-first layout, bidirectional GSAP
 5. SignatureDishes - Sabores de Kaelin's - 6 named items
 6. HeritageBlock - 1958 typography block
 7. LoyaltyAppCardCTA - AppCard signup
-8. InstagramFeed - live, behind feature flag
+8. InstagramFeed - LIVE-OR-INVISIBLE (only renders when handle confirmed + token live)
 9. TestimonialsMarquee - dual-row, real reviews
 10. EngagementCTA - merged SMS + email form
+
+## Weekly Ad Data Pipeline
+
+Primary source: **WordPress REST API** (returns featured image URLs reliably):
+```
+https://kaelinsmarket.com/wp-json/wp/v2/posts?categories=13&per_page=8&_embed=wp:featuredmedia
+```
+
+Fallback: WordPress RSS feed (kept for resilience; lib/parse-rss.ts retains the parser).
+
+When WP REST returns featured images, the archive grid cards open a full-screen lightbox showing the raw JPG. Tap outside the image or press Escape to close. Secondary "View on kaelinsmarket.com" link is available in the lightbox but is NOT the primary tap target.
+
+## Text DEALS SMS CTA - Desktop Behavior (Intentional)
+
+The "Text DEALS to (619) 440-1423" CTA in EngagementCTA uses an `sms:` href.
+
+- **iOS:** Opens Messages with the recipient and body pre-filled. Works as designed.
+- **Android:** Opens default SMS app with recipient and body pre-filled. Works as designed.
+- **Desktop Chrome/Firefox/Safari:** No SMS handler is registered. Clicking the button silently does nothing.
+
+This is **intentional**. The CTA is mobile-first by design — SMS conversions only happen on phones, and 90%+ of grocery site mobile traffic is mobile. Desktop users see the same button as a brand cue but are not the target audience for the conversion. No fallback is needed.
 
 ## Cron Schedule (Hobby-plan compliant)
 
@@ -94,8 +116,8 @@ FB_PAGE_ID              (only after FB page verified)
 ## Unblock Checklist
 
 - [ ] Owner email - unblocks contact form, catering, jobs, newsletter
-- [ ] Instagram handle confirmation + token - unlocks live feed
-- [ ] Facebook page vanity URL - replaces numeric URL, satisfies QC #20
+- [ ] Instagram handle confirmation + token - flips INSTAGRAM_VERIFIED flag, makes feed render (currently invisible per Iron Law #8)
+- [ ] Facebook page vanity URL - flips FACEBOOK_VERIFIED flag, adds link to footer (currently hidden per Iron Law #8)
 - [ ] **Vercel Pro upgrade** - REQUIRED before re-enabling hourly `refresh-social-feed` cron. Trigger: at least one social handle (IG or FB) verified AND owner approves the plan-tier cost.
 - [ ] Domain decision - deploy stays at *.vercel.app until owner approves cutover
 - [ ] GitHub Actions workflows - paste from docs/CI_WORKFLOWS.md via web UI (token scope limitation)
