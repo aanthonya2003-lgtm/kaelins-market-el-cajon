@@ -2,17 +2,17 @@
 
 > El Cajon's first supermarket. Family-owned since 1958. Mexican & Arabic mercado.
 
-Built by Weblove Elite. Next.js 15.3.2 + React 19 + Tailwind 4.1.5 + GSAP + Lenis + Framer Motion.
+Built by Weblove Elite. Next.js 15.5.18 + React 19.0.6 + Tailwind 4.1.5 + GSAP + Lenis + Framer Motion.
 
 ## Live
 
-- **Vercel:** _import this repo at vercel.com/new - auto-deploys in ~90s_
+- **Vercel:** https://kaelins-market-el-cajon.vercel.app
 - **Custom domain:** TBD (legacy WordPress remains live at kaelinsmarket.com)
 - **Legacy site:** https://kaelinsmarket.com
 
 ## Stack
 
-- Next.js 15.3.2 (App Router) + React 19 + TypeScript strict
+- Next.js 15.5.18 (App Router) + React 19.0.6 + TypeScript strict
 - Tailwind CSS v4.1.5 (OKLCH color system, @theme tokens)
 - GSAP 3.12.5 + @gsap/react + ScrollTrigger + SplitType
 - Lenis 1.1.20 (smooth scroll, ticker-synced with GSAP)
@@ -27,8 +27,20 @@ Built by Weblove Elite. Next.js 15.3.2 + React 19 + Tailwind 4.1.5 + GSAP + Leni
 3. Bidirectional animations. once: true is BANNED.
 4. 100dvh on hero, never 100vh.
 5. Cron schedules respect Vercel plan limits. See docs/DEFINITION_OF_DONE.md for tier matrix.
+6. Patch-hygiene check at every session kickoff. See docs/DEFINITION_OF_DONE.md.
+7. Legal claims require 2+ sources, one authoritative. See docs/DEFINITION_OF_DONE.md.
 
-## Sections (in render order - per ROI funnel)
+## Routes
+
+```
+/                  Home (10-section composition)
+/weekly-ad         Live RSS feed + Fisher Printing iframe + countdown
+/departments       TBD (sprint in progress)
+/loyalty           TBD (sprint in progress)
+/about             TBD (sprint in progress)
+```
+
+## Home page sections (in render order - per ROI funnel)
 
 1. Hero - SplitText reveal, Ken Burns loop, 100dvh
 2. SocialProofStrip - 1958 + 4.4 stars + 93/100 health
@@ -48,7 +60,7 @@ Built by Weblove Elite. Next.js 15.3.2 + React 19 + Tailwind 4.1.5 + GSAP + Leni
 /api/cron/health-check           Daily 08:00 UTC (link integrity)
 ```
 
-**Dormant** (route file exists but not scheduled — requires Vercel Pro upgrade):
+**Dormant** (route file exists but not scheduled - requires Vercel Pro upgrade):
 
 ```
 /api/cron/refresh-social-feed    Hourly          (re-enable on Pro)
@@ -85,6 +97,8 @@ FB_PAGE_ID              (only after FB page verified)
 - [ ] **Vercel Pro upgrade** - REQUIRED before re-enabling hourly `refresh-social-feed` cron. Trigger: at least one social handle (IG or FB) verified AND owner approves the plan-tier cost.
 - [ ] Domain decision - deploy stays at *.vercel.app until owner approves cutover
 - [ ] GitHub Actions workflows - paste from docs/CI_WORKFLOWS.md via web UI (token scope limitation)
+- [ ] **Alpine Twisters Inc incorporation year** - placeholder in /about timeline. Pull from California Secretary of State business search OR owner-confirm before adding date.
+- [ ] **Owner quote for /about** - placeholder shipped. Awaits Hani Garmo confirmation.
 
 ## Build by
 
