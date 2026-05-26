@@ -38,11 +38,11 @@ export function MagneticButton({
       gsap.to(el, { x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.4)' });
     };
 
-    el.addEventListener('mousemove', onMove);
-    el.addEventListener('mouseleave', onLeave);
+    el.addEventListener('mousemove', onMove as EventListener);
+    el.addEventListener('mouseleave', onLeave as EventListener);
     return () => {
-      el.removeEventListener('mousemove', onMove);
-      el.removeEventListener('mouseleave', onLeave);
+      el.removeEventListener('mousemove', onMove as EventListener);
+      el.removeEventListener('mouseleave', onLeave as EventListener);
     };
   }, [strength]);
 
